@@ -1,4 +1,7 @@
+// data path for main data set
 export const dataPath = "data/netflix_clean.csv"
+
+export const geoDataPath = "data/geo.csv"
 
 /**
  * Group data by type (show vs movie) and date added.

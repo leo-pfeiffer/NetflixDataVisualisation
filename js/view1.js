@@ -1,8 +1,6 @@
-import {groupData} from "./utils.js";
+import {dataPath, groupData} from "./utils.js";
 
 (function() {
-
-    const dataPath = "data/netflix_titles.csv"
 
     const width = 800;					//specifies the width, height and margins of our SVG element
     const height = 600;

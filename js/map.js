@@ -1,4 +1,4 @@
-import {dataPath} from "./utils.js";
+import {dataPath, geoDataPath} from "./utils.js";
 
 (function() {
 

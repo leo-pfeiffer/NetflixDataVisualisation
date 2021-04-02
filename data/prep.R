@@ -1,5 +1,5 @@
 library(readr)
-geo <- read_csv("country-by-geo-cordinations.csv")
+geo <- read_csv("geo.csv")
 netflix <- read_csv("netflix_titles.csv")
 
 # Split country
