@@ -1,11 +1,12 @@
+import {dataPath} from "./utils.js";
+
 (function() {
 
-    const makeVis = function () {
-        const dataPath = "data/netflix_titles.csv"
+    const width = 800;					//specifies the width, height and margins of our SVG element
+    const height = 600;
+    const margin = 100;
 
-        const width = 800;					//specifies the width, height and margins of our SVG element
-        const height = 600;
-        const margin = 100;
+    const makeVis = function () {
 
         const map = L.map('map').setView([28.0339, 1.6596], 2);
 

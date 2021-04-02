@@ -1,3 +1,5 @@
+import {groupData} from "./utils.js";
+
 (function() {
 
     const dataPath = "data/netflix_titles.csv"
@@ -11,17 +13,7 @@
         d3.csv(dataPath)
             .then(function(data) {
 
-                const groupedData = d3.nest()
-                    .key((d) => {
-                        return d.type;
-                    })
-                    .key((d) => {
-                        return new Date(d.date_added);
-                    })
-                    .rollup((v) => {
-                        return v.length;
-                    })
-                    .entries(data)
+                const groupedData = groupData(data);
 
                 const yearExtent = d3.extent(data, (d) => {
                     return new Date(d.date_added);
