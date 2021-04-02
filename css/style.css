@@ -1,4 +1,7 @@
-/*Attribution https://www.web-eau.net/blog/examples-header-bootstrap*/
+/*
+* General page layout
+* Attribution https://www.web-eau.net/blog/examples-header-bootstrap
+*/
 
 .navbar {
     transition: all 0.4s;
@@ -51,7 +54,9 @@ body {
 }
 
 
-/* D3 */
+/*
+* D3 related styling
+*/
 .line {
     fill: none;
 }
@@ -60,4 +65,10 @@ body {
 }
 .movies {
     stroke: #E50914;
+}
+
+.map {
+    width: 800px;
+    height: 600px;
+    margin: 50px;
 }
