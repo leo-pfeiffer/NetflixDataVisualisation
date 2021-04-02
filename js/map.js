@@ -2,7 +2,7 @@ import {dataPath, geoDataPath} from "./utils.js";
 
 (function() {
 
-    const width = 800;					//specifies the width, height and margins of our SVG element
+    const width = 800;
     const height = 600;
     const margin = 100;
 
