@@ -1,5 +1,4 @@
-import {dataPath, geoDataPath, rowConverter} from "./utils.js";
-
+import {dataPath, geoDataPath} from "./utils.js";
 
 const width = 800;
 const height = 600;
@@ -23,9 +22,24 @@ function makeSlider() {
     return mapTimeSlider;
 }
 
-
+function makeYearDisplay() {
+    const yearDisplay = document.createElement('p')
+    yearDisplay.style.fontWeight = 'bold'
+    yearDisplay.innerText = 'All years'
+    document.getElementById('map-controller').appendChild(yearDisplay);
+    return yearDisplay;
+}
 
 function makeVis([geoData, data]) {
+
+    // Transform the list like elements of each object in the data into an array of elements
+    data = data.map(el => {
+        el.country = el.country.split(', ');
+        el.director = el.director.split(', ');
+        el.cast = el.cast.split(', ');
+        el.listed_in = el.listed_in.split(', ');
+        return el;
+    })
 
     // Create the map
     const map = L.map('map').setView([28.0339, 1.6596], 2);
@@ -52,27 +66,22 @@ function makeVis([geoData, data]) {
     CartoDB_PositronNoLabels.addTo(map)
     Stamen_TonerHybrid.addTo(map)
 
+    // Create an array that contains all countries from the dataset (unique)
     let uniqueCountries = data
         // create array of country names
-        .map(el => el.country.split(', ')).reduce((a, b) => a.concat(b))
+        .map(el => el.country).reduce((a, b) => a.concat(b))
         // reduce to unique values and exclude "NA"
         .filter((v, i, self) => self.indexOf(v) === i).filter(el => el !== "NA")
 
-    console.log()
+    // Movie and Show count for all countries
+    let countPerCountry = data.reduce((obj, el) => {
+        el.country.forEach((d) => {obj.hasOwnProperty(d) ? obj[d] += 1 : obj[d] = 1})
+        return obj
+    }, {})
 
-    let dataCountryArrayed = data.map(el => {
-        el.country = el.country.split(', ');
-        return el;
-    })
-
-    let countPerCountry = dataCountryArrayed
-        .reduce((obj, el) => {
-            el.country.forEach((d) => {obj.hasOwnProperty(d) ? obj[d] += 1 : obj[d] = 1})
-            return obj
-        }, {})
-
+    // Movie and Show count for all countries in a give year
     const countPerCountryPerYear = function(year) {
-        return dataCountryArrayed
+        return data
             .filter(el => new Date(el.date_added).getFullYear() === year)
             .reduce((obj, el) => {
                 el.country.forEach((d) => {obj.hasOwnProperty(d) ? obj[d] += 1 : obj[d] = 1})
@@ -89,23 +98,29 @@ function makeVis([geoData, data]) {
             return obj
         }, {})
 
-    // Add markers to map for the countries in the data set
-
+    // Create a feature group for the markers
     let circleLayer = L.featureGroup();
 
-    const drawMap = function(year=null) {
+    // draw the markers and their descriptors on the map
+    const drawCircles = function(year=null) {
 
+        // Remove the previously added circles
         if (map.hasLayer(circleLayer)) {
             map.removeLayer(circleLayer)
         }
+
+        // Set a new feature group
         circleLayer = L.featureGroup();
 
+        // Get the correctly filtered data set
         let countData = year === null ? countPerCountry : countPerCountryPerYear(year)
 
         uniqueCountries.forEach((d) => {
 
+            // if the country is not present in the given year
             if (!(countData.hasOwnProperty(d))) return
 
+            // Add the circle
             let circle = L.circle(coordinates[d], {
                 color: 'black',
                 fillColor: 'black',
@@ -114,35 +129,47 @@ function makeVis([geoData, data]) {
             })
             circle.addTo(circleLayer)
 
+            // Add the popup
             let popUp = L.popup();
             circle.on("mouseover", (e) => {
                 popUp.setLatLng(e.latlng)
-                    .setContent(d)
+                    .setContent(`${d}: ${countData[d]}`)
                     .openOn(map);
             })
         })
         circleLayer.addTo(map);
     }
 
-    // Create a basic time slider for the map
-    mapTimeSlider.onchange = () => drawMap(parseInt(mapTimeSlider.value))
+    // Setup the click behaviour of the time slider
+    mapTimeSlider.onchange = () => {
+        drawCircles(parseInt(mapTimeSlider.value))
+        yearDisplay.innerText = mapTimeSlider.value
+    }
+
+    // Setup the click behaviour of the timeCheckBox
     mapTimeCheckBox.onclick = () => {
         if (mapTimeCheckBox.checked) {
             mapTimeSlider.disabled = false
-            drawMap(parseInt(mapTimeSlider.value))
+            drawCircles(parseInt(mapTimeSlider.value))
+            yearDisplay.innerText = mapTimeSlider.value
         } else {
             mapTimeSlider.disabled = true
-            drawMap()
+            drawCircles()
+            yearDisplay.innerText = "All years"
         }
     }
 
-    drawMap()
+    // draw circles
+    drawCircles()
 
 }
 
+// make controller elements
 const mapTimeCheckBox = makeCheckBox();
 const mapTimeSlider = makeSlider()
+const yearDisplay = makeYearDisplay();
 
+// Require the datasets
 let dataPromises = [
     d3.csv(geoDataPath),
     d3.csv(dataPath)
