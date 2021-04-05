@@ -5,6 +5,26 @@ const width = 800;
 const height = 600;
 const margin = 100;
 
+function makeCheckBox() {
+    const mapTimeCheckbox = document.createElement('input')
+    mapTimeCheckbox.setAttribute('type', 'checkbox')
+    document.getElementById('map-controller').appendChild(mapTimeCheckbox);
+    return mapTimeCheckbox;
+}
+
+function makeSlider() {
+    const mapTimeSlider = document.createElement('input')
+    mapTimeSlider.setAttribute('type', 'range')
+    mapTimeSlider.setAttribute('disabled', 'true')
+    mapTimeSlider.setAttribute('min', '2008')
+    mapTimeSlider.setAttribute('max', '2020')
+    mapTimeSlider.setAttribute('class', 'slider')
+    document.getElementById('map-controller').appendChild(mapTimeSlider);
+    return mapTimeSlider;
+}
+
+
+
 function makeVis([geoData, data]) {
 
     // Create the map
@@ -105,18 +125,23 @@ function makeVis([geoData, data]) {
     }
 
     // Create a basic time slider for the map
-    const mapTimeSlider = document.createElement('input')
-    mapTimeSlider.setAttribute('type', 'range')
-    mapTimeSlider.setAttribute('min', '2008')
-    mapTimeSlider.setAttribute('max', '2020')
-    mapTimeSlider.setAttribute('class', 'slider')
-
     mapTimeSlider.onchange = () => drawMap(parseInt(mapTimeSlider.value))
-    document.getElementById('vis2').appendChild(mapTimeSlider);
+    mapTimeCheckBox.onclick = () => {
+        if (mapTimeCheckBox.checked) {
+            mapTimeSlider.disabled = false
+            drawMap(parseInt(mapTimeSlider.value))
+        } else {
+            mapTimeSlider.disabled = true
+            drawMap()
+        }
+    }
 
     drawMap()
 
 }
+
+const mapTimeCheckBox = makeCheckBox();
+const mapTimeSlider = makeSlider()
 
 let dataPromises = [
     d3.csv(geoDataPath),

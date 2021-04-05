@@ -72,3 +72,9 @@ body {
     height: 600px;
     margin: 50px;
 }
+
+/* Contains controller elements (e.g. slider, filter etc) for views */
+.controller {
+    width: 800px;
+    margin: 50px;
+}
