@@ -30,7 +30,17 @@ function makeYearDisplay() {
     return yearDisplay;
 }
 
+function makeGenreSelectBox() {
+    const genreSelectBox = document.createElement('select')
+    genreSelectBox.setAttribute('multiple', 'true')
+    document.getElementById('map-controller').appendChild(genreSelectBox);
+    return genreSelectBox;
+}
+
 function makeVis([geoData, data]) {
+
+    let selectedYear = null;
+    let selectedGenres = null;
 
     // Transform the list like elements of each object in the data into an array of elements
     data = data.map(el => {
@@ -73,16 +83,25 @@ function makeVis([geoData, data]) {
         // reduce to unique values and exclude "NA"
         .filter((v, i, self) => self.indexOf(v) === i).filter(el => el !== "NA")
 
-    // Movie and Show count for all countries
-    let countPerCountry = data.reduce((obj, el) => {
-        el.country.forEach((d) => {obj.hasOwnProperty(d) ? obj[d] += 1 : obj[d] = 1})
-        return obj
-    }, {})
+    let uniqueGenres = data
+        // create array of genres
+        .map(el => el.listed_in).reduce((a, b) => a.concat(b))
+        // reduce to unique values and exclude "NA"
+        .filter((v, i, self) => self.indexOf(v) === i).filter(el => el !== "NA")
 
     // Movie and Show count for all countries in a give year
-    const countPerCountryPerYear = function(year) {
-        return data
-            .filter(el => new Date(el.date_added).getFullYear() === year)
+    const countPerCountryPerFilter = function() {
+        let tempData = data;
+
+        // filter entries of the current year
+        if (selectedYear !== null) tempData = tempData.filter(el => new Date(el.date_added).getFullYear() === selectedYear)
+
+        // filter entries that contain at least one of the selected genres
+        if (selectedGenres !== null) tempData = tempData.filter(el => {
+            return [selectedGenres, el.listed_in].reduce((a, b) => a.filter(c => b.includes(c))).length > 0;
+        })
+
+        return tempData
             .reduce((obj, el) => {
                 el.country.forEach((d) => {obj.hasOwnProperty(d) ? obj[d] += 1 : obj[d] = 1})
                 return obj
@@ -102,7 +121,7 @@ function makeVis([geoData, data]) {
     let circleLayer = L.featureGroup();
 
     // draw the markers and their descriptors on the map
-    const drawCircles = function(year=null) {
+    const drawCircles = function() {
 
         // Remove the previously added circles
         if (map.hasLayer(circleLayer)) {
@@ -113,7 +132,7 @@ function makeVis([geoData, data]) {
         circleLayer = L.featureGroup();
 
         // Get the correctly filtered data set
-        let countData = year === null ? countPerCountry : countPerCountryPerYear(year)
+        let countData = countPerCountryPerFilter()
 
         uniqueCountries.forEach((d) => {
 
@@ -150,13 +169,29 @@ function makeVis([geoData, data]) {
     mapTimeCheckBox.onclick = () => {
         if (mapTimeCheckBox.checked) {
             mapTimeSlider.disabled = false
-            drawCircles(parseInt(mapTimeSlider.value))
+            selectedYear = parseInt(mapTimeSlider.value);
+            drawCircles()
             yearDisplay.innerText = mapTimeSlider.value
         } else {
             mapTimeSlider.disabled = true
+            selectedYear = null;
             drawCircles()
             yearDisplay.innerText = "All years"
         }
+    }
+
+    uniqueGenres.forEach((g) => {
+        let option = document.createElement('option')
+        option.value = g
+        option.innerText = g
+        genreSelectBox.appendChild(option)
+    })
+
+    genreSelectBox.onchange = () => {
+        const genres = Array.from(genreSelectBox.selectedOptions).map(el => el.value)
+        console.log(genres)
+        selectedGenres = genres
+        drawCircles()
     }
 
     // draw circles
@@ -168,6 +203,7 @@ function makeVis([geoData, data]) {
 const mapTimeCheckBox = makeCheckBox();
 const mapTimeSlider = makeSlider()
 const yearDisplay = makeYearDisplay();
+const genreSelectBox = makeGenreSelectBox();
 
 // Require the datasets
 let dataPromises = [
