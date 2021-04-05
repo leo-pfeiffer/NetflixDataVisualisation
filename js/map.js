@@ -161,7 +161,8 @@ function makeVis([geoData, data]) {
 
     // Setup the click behaviour of the time slider
     mapTimeSlider.onchange = () => {
-        drawCircles(parseInt(mapTimeSlider.value))
+        selectedYear = parseInt(mapTimeSlider.value);
+        drawCircles()
         yearDisplay.innerText = mapTimeSlider.value
     }
 
