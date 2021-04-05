@@ -40,6 +40,26 @@ function makeVis([geoData, data]) {
 
     console.log()
 
+    let dataCountryArrayed = data.map(el => {
+        el.country = el.country.split(', ');
+        return el;
+    })
+
+    let countPerCountry = dataCountryArrayed
+        .reduce((obj, el) => {
+            el.country.forEach((d) => {obj.hasOwnProperty(d) ? obj[d] += 1 : obj[d] = 1})
+            return obj
+        }, {})
+
+    const countPerCountryPerYear = function(year) {
+        return dataCountryArrayed
+            .filter(el => new Date(el.date_added).getFullYear() === year)
+            .reduce((obj, el) => {
+                el.country.forEach((d) => {obj.hasOwnProperty(d) ? obj[d] += 1 : obj[d] = 1})
+                return obj
+            }, {})
+    }
+
     // Create an Object of the form {country1: [north, east], country2: [north, east], ...} for the countries
     //  in uniqueCountries
     let coordinates = geoData
@@ -50,23 +70,51 @@ function makeVis([geoData, data]) {
         }, {})
 
     // Add markers to map for the countries in the data set
-    uniqueCountries.forEach((d) => {
-        let circle = L.circle(coordinates[d], {
-            color: 'black',
-            fillColor: 'black',
-            fillOpacity: 0.4,
-            radius: 500
-        })
-        circle.addTo(map)
 
-        let popUp = L.popup();
-        circle.on("mouseover", (e) => {
-            popUp.setLatLng(e.latlng)
-                .setContent(d)
-                .openOn(map);
-        })
+    let circleLayer = L.featureGroup();
 
-    })
+    const drawMap = function(year=null) {
+
+        if (map.hasLayer(circleLayer)) {
+            map.removeLayer(circleLayer)
+        }
+        circleLayer = L.featureGroup();
+
+        let countData = year === null ? countPerCountry : countPerCountryPerYear(year)
+
+        uniqueCountries.forEach((d) => {
+
+            if (!(countData.hasOwnProperty(d))) return
+
+            let circle = L.circle(coordinates[d], {
+                color: 'black',
+                fillColor: 'black',
+                fillOpacity: 0.4,
+                radius: 500 * countData[d]
+            })
+            circle.addTo(circleLayer)
+
+            let popUp = L.popup();
+            circle.on("mouseover", (e) => {
+                popUp.setLatLng(e.latlng)
+                    .setContent(d)
+                    .openOn(map);
+            })
+        })
+        circleLayer.addTo(map);
+    }
+
+    // Create a basic time slider for the map
+    const mapTimeSlider = document.createElement('input')
+    mapTimeSlider.setAttribute('type', 'range')
+    mapTimeSlider.setAttribute('min', '2008')
+    mapTimeSlider.setAttribute('max', '2020')
+    mapTimeSlider.setAttribute('class', 'slider')
+
+    mapTimeSlider.onchange = () => drawMap(parseInt(mapTimeSlider.value))
+    document.getElementById('vis2').appendChild(mapTimeSlider);
+
+    drawMap()
 
 }
 
