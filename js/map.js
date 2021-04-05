@@ -101,9 +101,32 @@ function makeVis([geoData, data]) {
             return [selectedGenres, el.listed_in].reduce((a, b) => a.filter(c => b.includes(c))).length > 0;
         })
 
+        // return tempData
+        //     .reduce((obj, el) => {
+        //         el.country.forEach((d) => {obj.hasOwnProperty(d) ? obj[d] += 1 : obj[d] = 1})
+        //         return obj
+        //     }, {})
+
+        // Count shows and movies per country: {country1: {showCount: 1, movieCount: 2}, ...}
         return tempData
             .reduce((obj, el) => {
-                el.country.forEach((d) => {obj.hasOwnProperty(d) ? obj[d] += 1 : obj[d] = 1})
+                if (el.type === "Movie") {
+                    el.country.forEach((d) => {
+                        if (obj.hasOwnProperty(d)) {
+                            obj[d].hasOwnProperty("movieCount") ? obj[d]["movieCount"] += 1 : obj[d]["movieCount"] = 1
+                        } else {
+                            obj[d] = {"movieCount": 1, "showCount": 0}
+                        }
+                    })
+                } else if (el.type === "TV Show") {
+                    el.country.forEach((d) => {
+                        if (obj.hasOwnProperty(d)) {
+                            obj[d].hasOwnProperty("showCount") ? obj[d]["showCount"] += 1 : obj[d]["showCount"] = 1
+                        } else {
+                            obj[d] = {"showCount": 1, "movieCount": 0}
+                        }
+                    })
+                }
                 return obj
             }, {})
     }
@@ -134,6 +157,8 @@ function makeVis([geoData, data]) {
         // Get the correctly filtered data set
         let countData = countPerCountryPerFilter()
 
+        let maxCount = Object.values(countData).map(el => Math.max(el.movieCount, el.showCount)).reduce((a, b) => b > a ? b : a)
+
         uniqueCountries.forEach((d) => {
 
             // if the country is not present in the given year
@@ -144,9 +169,18 @@ function makeVis([geoData, data]) {
                 color: 'black',
                 fillColor: 'black',
                 fillOpacity: 0.4,
-                radius: 500 * countData[d]
+                radius: 500 * (countData[d].movieCount + countData[d].showCount)
             })
             circle.addTo(circleLayer)
+
+            // Bar chart
+            // <script src="https://unpkg.com/leaflet.minichart/dist/leaflet.minichart.min.js" charSet="utf-8"></script>
+            // let barChart = L.minichart(coordinates[d], {
+            //     data: [countData[d].movieCount, countData[d].showCount],
+            //     maxValues: [maxCount, maxCount],
+            //     width: 20,
+            // });
+            // map.addLayer(barChart);
 
             // Add the popup
             let popUp = L.popup();
