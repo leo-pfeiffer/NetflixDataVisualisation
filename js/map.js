@@ -55,9 +55,9 @@ function makeVis([geoData, data]) {
     const map = L.map('map').setView([28.0339, 1.6596], 2);
 
     // Add tile layers
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+    const OSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="href://osm.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+    });
 
     const CartoDB_PositronNoLabels = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
@@ -73,6 +73,7 @@ function makeVis([geoData, data]) {
         ext: 'png'
     });
 
+    OSM.addTo(map);
     CartoDB_PositronNoLabels.addTo(map)
     Stamen_TonerHybrid.addTo(map)
 
@@ -156,8 +157,11 @@ function makeVis([geoData, data]) {
 
         // Get the correctly filtered data set
         let countData = countPerCountryPerFilter()
+        if (Object.values(countData).length === 0) return
 
-        let maxCount = Object.values(countData).map(el => Math.max(el.movieCount, el.showCount)).reduce((a, b) => b > a ? b : a)
+        let maxCount = Object.values(countData)
+            .map(el => Math.max(el.movieCount, el.showCount))
+            .reduce((a, b) => b > a ? b : a)
 
         uniqueCountries.forEach((d) => {
 
@@ -184,9 +188,12 @@ function makeVis([geoData, data]) {
 
             // Add the popup
             let popUp = L.popup();
+
+            let content = `<strong>${d}</strong><br>Movies: ${countData[d].movieCount}<br>Shows: ${countData[d].showCount}`
+
             circle.on("mouseover", (e) => {
                 popUp.setLatLng(e.latlng)
-                    .setContent(`${d}: ${countData[d]}`)
+                    .setContent(content)
                     .openOn(map);
             })
         })
