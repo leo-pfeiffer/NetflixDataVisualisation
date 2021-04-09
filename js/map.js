@@ -1,4 +1,4 @@
-import {dataPath, geoDataPath} from "./utils.js";
+import {dataPath, dataSplit, geoDataPath, getUniqueCountries, getUniqueGenres} from "./utils.js";
 
 const width = 800;
 const height = 600;
@@ -43,13 +43,7 @@ function makeVis([geoData, data]) {
     let selectedGenres = null;
 
     // Transform the list like elements of each object in the data into an array of elements
-    data = data.map(el => {
-        el.country = el.country.split(', ');
-        el.director = el.director.split(', ');
-        el.cast = el.cast.split(', ');
-        el.listed_in = el.listed_in.split(', ');
-        return el;
-    })
+    data = dataSplit(data);
 
     // Create the map
     const map = L.map('map').setView([28.0339, 1.6596], 2);
@@ -78,17 +72,9 @@ function makeVis([geoData, data]) {
     Stamen_TonerHybrid.addTo(map)
 
     // Create an array that contains all countries from the dataset (unique)
-    let uniqueCountries = data
-        // create array of country names
-        .map(el => el.country).reduce((a, b) => a.concat(b))
-        // reduce to unique values and exclude "NA"
-        .filter((v, i, self) => self.indexOf(v) === i).filter(el => el !== "NA")
+    let uniqueCountries = getUniqueCountries(data)
 
-    let uniqueGenres = data
-        // create array of genres
-        .map(el => el.listed_in).reduce((a, b) => a.concat(b))
-        // reduce to unique values and exclude "NA"
-        .filter((v, i, self) => self.indexOf(v) === i).filter(el => el !== "NA")
+    let uniqueGenres = getUniqueGenres(data)
 
     // Movie and Show count for all countries in a give year
     const countPerCountryPerFilter = function() {

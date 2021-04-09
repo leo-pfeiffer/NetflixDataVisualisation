@@ -111,7 +111,7 @@ const rowConverter = function (d) {
 }
 
 //function that creates the main visualization
-const makeVisBar = function () {
+const makeVisBar = function (type) {
     d3.csv(dataPath, rowConverter)
         .then(function (data) {
 
@@ -125,48 +125,45 @@ const makeVisBar = function () {
             // bt2.id = "movie"
             // vis1_div.appendChild(bt2)
 
-            //separating the years from the rest of the JSON
-            const all_years = [];
-            for (let i = 0; i < data.length; i++) {
-                all_years.push(data[i].date_added)
-            }
-
             //function to calculate number of tv shows added over the years
             const countTV = () => {
                 let tempData = data;
-                let total_TV = {}
-                let all_years_edited = [];
-                all_years_edited = all_years.filter(el => el !== undefined)
-                total_TV = tempData.filter(el => el.type === "TV Show")
-                    .reduce((obj) => {
-                        all_years_edited.forEach((d) => { obj.hasOwnProperty(d) ? obj[d] += 1 : obj[d] = 1 })
+                let totalTV = tempData.filter(el => el.type === "TV Show")
+                    .reduce((obj, el) => {
+                        obj.hasOwnProperty(el.date_added) ? obj[el.date_added] += 1 : obj[el.date_added] = 1;
                         return obj
                     }, {})
-                return total_TV
+
+                return totalTV
             }
 
             //function to calculate number of movies added over the years
             const countMovie = () => {
                 let tempData = data;
-                let total_Movie = {}
-                let all_years_edited = [];
-                all_years_edited = all_years.filter(el => el !== undefined)
-                total_Movie = tempData.filter(el => el.type === "Movie")
-                    .reduce((obj) => {
-                        all_years_edited.forEach((d) => { obj.hasOwnProperty(d) ? obj[d] += 1 : obj[d] = 1 })
+                let totalMovie = tempData.filter(el => el.type === "Movie")
+                    .reduce((obj, el) => {
+                        obj.hasOwnProperty(el.date_added) ? obj[el.date_added] += 1 : obj[el.date_added] = 1;
                         return obj
                     }, {})
-                return total_Movie
+
+                return totalMovie
+            }
+
+            let count;
+            let keys = [];
+            let values = [];
+
+            if (type === "TV Show") {
+                count = countTV()
+            }
+            else if (type === "Movie") {
+                count = countMovie()
             }
 
             //separating keys (the years) from values (based on button click?)
-            let countTv = countTV()
-            let count_Movie = countMovie()
-            let keys = [];
-            let values = [];
-            for (let k in count_Movie) keys.push(parseInt(k));
-            for (let k in count_Movie) {
-                values.push(count_Movie[k]);
+            for (let k in count) keys.push(parseInt(k));
+            for (let k in count) {
+                values.push(count[k]);
             }
 
             // if (document.getElementById('movie').clicked == true) {
@@ -249,4 +246,21 @@ const makeVisBar = function () {
         })
 }
 
-makeVisBar()
+function makeToggleButton() {
+    const toggleButton = document.createElement('button')
+    toggleButton.innerText = 'Toggle'
+    document.getElementById('bar-controller').appendChild(toggleButton);
+    return toggleButton;
+}
+
+const toggleButton = makeToggleButton();
+let showType = "Movie"
+
+toggleButton.onclick = () => {
+    showType = showType === "Movie" ? "TV Show" : "Movie"
+    document.getElementById('vis1').getElementsByTagName('svg')[0].remove()
+    makeVisBar(showType);
+}
+
+makeVisBar(showType);
+
