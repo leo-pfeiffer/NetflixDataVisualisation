@@ -1,12 +1,8 @@
 import {dataPath, dataSplit, getUniqueGenres} from "./utils.js";
 
-// const width = 800;
-// const height = 600;
-// const margin = 50;
-
 const margin = 50
 const width = 750
-const height = 500
+const height = 450
 
 const makeVis = function() {
 
@@ -22,7 +18,7 @@ const makeVis = function() {
             // extract year and genres
             data = data.map(el => {
                 return {year: new Date(el.date_added).getFullYear(), genres: el.listed_in}
-            }).filter(el => !isNaN(el.year));
+            }).filter(el => !isNaN(el.year) && el.year >= startYear);
 
             // get all years in the data set
             let allYears = data.reduce((a, b) => a.includes(b.year) ? a : a.concat(b.year), []).sort()
@@ -48,7 +44,7 @@ const makeVis = function() {
             // stack the data
             let stackedData = d3.stack().offset(d3.stackOffsetSilhouette).keys(genres)(preppedData)
 
-            let svg = d3.select("#vis3")
+            let svg = d3.select("#streamgraph")
                 .append("svg")
                 .attr("width", width + margin)
                 .attr("height", height + margin)
@@ -58,12 +54,12 @@ const makeVis = function() {
             const yearExtent = d3.extent(data, (d) => d.year)
 
             // Add X axis
-            let x = d3.scaleLinear().domain(yearExtent).range([ 0, width ]);
+            let x = d3.scaleLinear().domain(yearExtent).range([ 0, width - parseInt(margin / 2) ]);
             let xAxis = d3.axisBottom(x);
 
             svg.append("g")
                 .attr("class", "x axis")
-                .attr("transform", "translate(" + (margin-10) + ", " + height + ")")
+                .attr("transform", "translate(" + parseInt(margin / 2) + ", " + height + ")")
                 .call(xAxis.tickSize(-height).tickFormat(d3.format(".4i")))
                 .select(".domain").remove()
 
@@ -103,7 +99,7 @@ const makeVis = function() {
             }
 
             let mousemove = function(d,i) {
-                let grp = `${genres[i]} : ${allYears[i]}`
+                let grp = `${genres[i]}`
                 Tooltip.text(grp)
             }
 
@@ -114,7 +110,7 @@ const makeVis = function() {
 
             // Area generator
             let area = d3.area()
-                .x(function(d) { return x(d.data.year); })
+                .x(function(d) { return x(d.data.year) + parseInt(margin / 2); })
                 .y0(function(d) { return y(d[0]); })
                 .y1(function(d) { return y(d[1]); })
 
@@ -130,6 +126,19 @@ const makeVis = function() {
                 .on("mousemove", mousemove)
                 .on("mouseleave", mouseleave)
         })
+}
+
+// todo start year
+let startYear = 2015
+
+const yearDisplay = document.getElementById('streamgraph-year');
+const timeSlider = document.getElementById('streamgraph-time-slider');
+
+timeSlider.onchange = () => {
+    startYear = parseInt(timeSlider.value);
+    // todo streamgraph should not be redrawn but updated
+    // makeVis()
+    yearDisplay.innerText = startYear
 }
 
 makeVis();

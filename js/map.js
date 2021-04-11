@@ -1,42 +1,5 @@
 import {dataPath, dataSplit, geoDataPath, getUniqueCountries, getUniqueGenres} from "./utils.js";
 
-const width = 800;
-const height = 600;
-const margin = 100;
-
-function makeCheckBox() {
-    const mapTimeCheckbox = document.createElement('input')
-    mapTimeCheckbox.setAttribute('type', 'checkbox')
-    document.getElementById('map-controller').appendChild(mapTimeCheckbox);
-    return mapTimeCheckbox;
-}
-
-function makeSlider() {
-    const mapTimeSlider = document.createElement('input')
-    mapTimeSlider.setAttribute('type', 'range')
-    mapTimeSlider.setAttribute('disabled', 'true')
-    mapTimeSlider.setAttribute('min', '2008')
-    mapTimeSlider.setAttribute('max', '2020')
-    mapTimeSlider.setAttribute('class', 'slider')
-    document.getElementById('map-controller').appendChild(mapTimeSlider);
-    return mapTimeSlider;
-}
-
-function makeYearDisplay() {
-    const yearDisplay = document.createElement('p')
-    yearDisplay.style.fontWeight = 'bold'
-    yearDisplay.innerText = 'All years'
-    document.getElementById('map-controller').appendChild(yearDisplay);
-    return yearDisplay;
-}
-
-function makeGenreSelectBox() {
-    const genreSelectBox = document.createElement('select')
-    genreSelectBox.setAttribute('multiple', 'true')
-    document.getElementById('map-controller').appendChild(genreSelectBox);
-    return genreSelectBox;
-}
-
 function makeVis([geoData, data]) {
 
     let selectedYear = null;
@@ -87,12 +50,6 @@ function makeVis([geoData, data]) {
         if (selectedGenres !== null) tempData = tempData.filter(el => {
             return [selectedGenres, el.listed_in].reduce((a, b) => a.filter(c => b.includes(c))).length > 0;
         })
-
-        // return tempData
-        //     .reduce((obj, el) => {
-        //         el.country.forEach((d) => {obj.hasOwnProperty(d) ? obj[d] += 1 : obj[d] = 1})
-        //         return obj
-        //     }, {})
 
         // Count shows and movies per country: {country1: {showCount: 1, movieCount: 2}, ...}
         return tempData
@@ -163,15 +120,6 @@ function makeVis([geoData, data]) {
             })
             circle.addTo(circleLayer)
 
-            // Bar chart
-            // <script src="https://unpkg.com/leaflet.minichart/dist/leaflet.minichart.min.js" charSet="utf-8"></script>
-            // let barChart = L.minichart(coordinates[d], {
-            //     data: [countData[d].movieCount, countData[d].showCount],
-            //     maxValues: [maxCount, maxCount],
-            //     width: 20,
-            // });
-            // map.addLayer(barChart);
-
             // Add the popup
             let popUp = L.popup();
 
@@ -228,10 +176,10 @@ function makeVis([geoData, data]) {
 }
 
 // make controller elements
-const mapTimeCheckBox = makeCheckBox();
-const mapTimeSlider = makeSlider()
-const yearDisplay = makeYearDisplay();
-const genreSelectBox = makeGenreSelectBox();
+const mapTimeCheckBox = document.getElementById('map-time-checkbox');
+const mapTimeSlider = document.getElementById('map-time-slider');
+const yearDisplay = document.getElementById('map-year-display');
+const genreSelectBox = document.getElementById('map-genre-select')
 
 // Require the datasets
 let dataPromises = [
