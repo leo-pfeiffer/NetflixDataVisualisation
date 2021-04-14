@@ -64,6 +64,15 @@ body {
     color: #E50914;
 }
 
+/** Splide */
+.splide__slide video {
+    width : 50%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /*
 * D3 related styling
 */

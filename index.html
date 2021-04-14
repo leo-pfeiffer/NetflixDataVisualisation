@@ -23,6 +23,11 @@
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"
             integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg=="crossorigin=""></script>
 
+    <!-- Splide JS: https://splidejs.com/ -->
+    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@latest/dist/js/splide.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@latest/dist/css/splide.min.css">
+
+
 </head>
 
 <!-- Navbar-->
@@ -68,6 +73,30 @@
                 an <a href="#vis2" class="text-white"><u>interactive map</u></a> depicting the production country along with a number of filters,
                 and a <a href="#vis3" class="text-white"><u>streamgraph</u></a> that allows the user to explore genres and their relative counts over time.
             </p>
+            <p class="lead">
+                Watch the following short videos to learn how to use each of the views.
+            </p>
+            <div id="image-slider" class="splide">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        <li class="splide__slide">
+                            <video id='video_player1' controls>
+                                <source src='media/test.mov' type='video/mp4'>
+                            </video>
+                        </li>
+                        <li class="splide__slide">
+                            <video id='video_player2' controls>
+                                <source src='media/test.mov' type='video/mp4'>
+                            </video>
+                        </li>
+                        <li class="splide__slide">
+                            <video id='video_player3' controls>
+                                <source src='media/test.mov' type='video/mp4'>
+                            </video>
+                        </li>
+                    </ul>
+                </div>
+            </div>
             <p class="lead">
                 Note that the dataset contains comparatively few movies and shows that were added before 2015. Where appropriate,
                 we therefore apply default filters on the time displayed to avoid obscuring the visualisations. These default
@@ -138,6 +167,9 @@
             }
         });
     });
+    document.addEventListener( 'DOMContentLoaded', function () {
+        new Splide( '#image-slider' ).mount();
+    } );
 
 </script>
 
