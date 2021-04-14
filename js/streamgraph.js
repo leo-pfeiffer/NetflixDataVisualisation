@@ -88,12 +88,14 @@ var color = d3.scaleOrdinal()
 // create a tooltip
 var Tooltip = svg
     .append("text")
-    .attr("x", 0)
-    .attr("y", 40)
+    // have to swap x and y due to rotation
+    .attr("x", -height)
+    .attr("y", 30)
     .style("opacity", 0)
     .style("fill", "white")
     .style("font-size", 40)
     .style("font-size", 40)
+    .attr("transform", "rotate(-90)");
 
 // Three function that change the tooltip when user hover / move / leave a cell
 var mouseover = function(d) {
@@ -113,7 +115,7 @@ var mouseleave = function(d) {
 
 // Area generator
 var area = d3.area()
-    .x(function(d) { return x(d.data.year) + parseInt(margin / 2); })
+    .x(function(d) { return x(d.data.year) + margin; })
     .y0(function(d) { return y(d[0]); })
     .y1(function(d) { return y(d[1]); })
 
@@ -132,7 +134,7 @@ d3.csv(dataPath)
         // append x axis
         svg.append("g")
             .attr("class", "x axis")
-            .attr("transform", "translate(" + parseInt(margin / 2) + ", " + height + ")")
+            .attr("transform", "translate(" + margin + ", " + height + ")")
             .call(xAxis.tickSize(-height).tickFormat(d3.format(".4i")))
             .select(".domain").remove()
 
