@@ -33,9 +33,10 @@
 
             <div id="navbarSupportedContent" class="collapse navbar-collapse">
                 <ul class="navbar-nav ml-auto">
-                    <li class="nav-item"><a href="#manual" class="nav-link text-uppercase font-weight-bold">How to use</a></li>
-                    <li class="nav-item"><a href="#vis1" class="nav-link text-uppercase font-weight-bold">View 1</a></li>
-                    <li class="nav-item"><a href="#vis2" class="nav-link text-uppercase font-weight-bold">View 2</a></li>
+                    <li class="nav-item"><a href="#overview" class="nav-link text-uppercase font-weight-bold">Overview</a></li>
+                    <li class="nav-item"><a href="#vis1" class="nav-link text-uppercase font-weight-bold">Bar chart</a></li>
+                    <li class="nav-item"><a href="#vis2" class="nav-link text-uppercase font-weight-bold">Interactive map</a></li>
+                    <li class="nav-item"><a href="#vis3" class="nav-link text-uppercase font-weight-bold">Streamgraph</a></li>
                 </ul>
             </div>
         </div>
@@ -47,29 +48,48 @@
 <div class="container">
     <div class="pt-5 text-white">
         <header class="py-5 mt-5">
-            <h1 class="display-4">Netflix shows</h1>
-            <p class="lead mb-0">Basic description of our project.</p>
-            <p class="lead mb-0">Link to out dataset.
+            <h1 class="display-4">Netflix shows and movies.</h1>
+            <p class="lead">
+                We're exploring a
                 <a href="https://www.kaggle.com/shivamb/netflix-shows" class="text-white">
-                    <u>Netflix shows</u></a>
+                    <u>dataset</u>
+                </a>
+                containing data on all movies and tv shows on Netflix (US) as of Spring 2021.
+                Our goal is to provide visualisations that help explore and answer the question:
             </p>
+            <p class="lead text-red font-weight-bold">How has the Netflix library changed over time?</p>
         </header>
 
-        <div class="py-5" id="manual">
-            <p class="lead">Some stuff about how to use our dataset. <strong class="font-weight-bold">Some bold text. </strong>
-                Some more blah blah.
+        <div class="py-5" id="overview">
+            <h1 class="display-6">Overview.</h1>
+            <p class="lead">
+                We provide three views to explore the question:
+                a <a href="#vis1" class="text-white"><u>bar chart</u></a> that focuses on the change of the total number of shows and movies on the platform over time,
+                an <a href="#vis2" class="text-white"><u>interactive map</u></a> depicting the production country along with a number of filters,
+                and a <a href="#vis3" class="text-white"><u>streamgraph</u></a> that allows the user to explore genres and their relative counts over time.
             </p>
-            <p class="lead">Maybe another section.
+            <p class="lead">
+                Note that the dataset contains comparatively few movies and shows that were added before 2015. Where appropriate,
+                we therefore apply default filters on the time displayed to avoid obscuring the visualisations. These default
+                filters are just an entry point though, so feel free to change the filters.
             </p>
+
         </div>
 
         <div class="py-5" id="vis1">
-            <p class="lead">Here we could put our first view. This is just a basic example.</p>
+            <h1 class="display-6">Bar chart.</h1>
+            <p class="lead">@Glenys : short description of what the bar chart does and how one could use it to answer the question.</p>
             <div class="controller" id="bar-controller"></div>
         </div>
 
         <div class="py-5" id="vis2">
-            <p class="lead">Here we could put our second view.</p>
+            <h1 class="display-6">Interactive map.</h1>
+            <p class="lead">
+                Explore the number of movies and shows in the netflix library per production country. When using the year filter,
+                be aware that there are significantly fewer entries in the database pre-2015 compared to later years. Alternatively,
+                the genre filter allows you to look at one or more genres in particular. To revert your selection and display
+                all genres at once, simply select all (<strong>Ctrl + A</strong> / <strong>CMD + A</strong>).
+            </p>
             <div class="map" id="map"></div>
             <div class="controller" id="map-controller">
                 <div id="time-slider-container">
@@ -82,10 +102,15 @@
         </div>
 
         <div class="py-5" id="vis3">
-            <p class="lead">Streamgraph.</p>
+            <h1 class="display-6">Streamgraph.</h1>
+            <p class="lead">
+                The wide range of genres offered on Netflix is not constant. This streamgraph allows you to explore
+                how the number of shows and movies per genre has changed relative to each other over the last years.
+                Note that setting the starting year before 2015 leads to a somewhat odd representation as there are
+                significantly fewer genres present for those early years compared to after 2015.
+            </p>
             <div id="streamgraph"></div>
             <div class="controller" id="streamgraph-controller">
-                <!-- Todo fill in streamgraph -->
                 <p id="streamgraph-slider-label">Starting year: <span id="streamgraph-year"> 2015 </span></p>
                 <input type="range" min="2008" max="2021" class="slider" id="streamgraph-time-slider">
             </div>
@@ -94,6 +119,10 @@
     </div>
 </div>
 </body>
+
+<footer>
+    <div class="footer-text">Practical 2 of CS5044 @ University of St Andrews | Group 29</div>
+</footer>
 
 <script type="text/javascript">
 
