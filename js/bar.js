@@ -118,7 +118,7 @@ const makeVisBar = function (type) {
             //function to calculate number of tv shows added over the years
             const countTV = () => {
                 let tempData = data;
-                let totalTV = tempData.filter(el => el.type === "TV Show").filter(el => el.date_added !== "NA")
+                let totalTV = tempData.filter(el => el.type === "TV Show").filter(el => el.date_added !== undefined)
                     .reduce((obj, el) => {
                         obj.hasOwnProperty(el.date_added) ? obj[el.date_added] += 1 : obj[el.date_added] = 1;
                         return obj
@@ -130,7 +130,7 @@ const makeVisBar = function (type) {
             //function to calculate number of movies added over the years
             const countMovie = () => {
                 let tempData = data;
-                let totalMovie = tempData.filter(el => el.type === "Movie").filter(el => el.date_added !== "NA")
+                let totalMovie = tempData.filter(el => el.type === "Movie").filter(el => el.date_added !== undefined)
                     .reduce((obj, el) => {
                         obj.hasOwnProperty(el.date_added) ? obj[el.date_added] += 1 : obj[el.date_added] = 1;
                         return obj
