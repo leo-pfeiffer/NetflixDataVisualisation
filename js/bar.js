@@ -115,20 +115,10 @@ const makeVisBar = function (type) {
     d3.csv(dataPath, rowConverter)
         .then(function (data) {
 
-            //buttons for changing values
-            // let bt1 = document.createElement('button');
-            // bt1.id = "tv"
-            // let vis1_div = document.getElementById("vis1");
-            // vis1_div.appendChild(bt1)
-
-            // let bt2 = document.createElement('button');
-            // bt2.id = "movie"
-            // vis1_div.appendChild(bt2)
-
             //function to calculate number of tv shows added over the years
             const countTV = () => {
                 let tempData = data;
-                let totalTV = tempData.filter(el => el.type === "TV Show")
+                let totalTV = tempData.filter(el => el.type === "TV Show").filter(el => el.date_added !== "NA")
                     .reduce((obj, el) => {
                         obj.hasOwnProperty(el.date_added) ? obj[el.date_added] += 1 : obj[el.date_added] = 1;
                         return obj
@@ -140,7 +130,7 @@ const makeVisBar = function (type) {
             //function to calculate number of movies added over the years
             const countMovie = () => {
                 let tempData = data;
-                let totalMovie = tempData.filter(el => el.type === "Movie")
+                let totalMovie = tempData.filter(el => el.type === "Movie").filter(el => el.date_added !== "NA")
                     .reduce((obj, el) => {
                         obj.hasOwnProperty(el.date_added) ? obj[el.date_added] += 1 : obj[el.date_added] = 1;
                         return obj
@@ -166,18 +156,6 @@ const makeVisBar = function (type) {
                 values.push(count[k]);
             }
 
-            // if (document.getElementById('movie').clicked == true) {
-            //     for (let k in count_Movie) keys.push(parseInt(k));
-            //     for (let k in count_Movie) {
-            //         values.push(count_Movie[k]);
-            //     }
-            // }
-            // else {
-            //     for (let k in countTv) keys.push(parseInt(k));
-            //     for (let k in countTv) {
-            //         values.push(countTv[k]);
-            //     }
-            // }
             console.log(keys)
             console.log(values)
 
@@ -187,61 +165,82 @@ const makeVisBar = function (type) {
                 .attr("width", width)
                 .attr("height", height)
 
-            let bar = svg.selectAll("g")
-                .data(values)
-                .enter()
-                .append("g")
-                .attr("transform", function (d, i) {
-                    return "translate(" + i * 10 + ",0)";
-                });
+            //creating scales
+            var xScale = d3.scaleBand()
+                .range([margin, width - 30])
+                .padding(0.2);
+            var yScale = d3.scaleLinear()
+                .range([height - margin, 0]);
 
-            //finding min and max values
-            let countExtent = d3.extent(values, function (d) {
-                return parseFloat(d);
-            })
+            xScale.domain([2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]);
+            yScale.domain([0, d3.max(values, function (d) { return d; })]);
 
-            //creating a scale for chart
-            let scale = d3.scaleLinear()
-                .range([50, 500])
-                .domain(countExtent);
 
             //creating bars
-            bar.append("rect")
+            svg.selectAll(".bar")
+                .data(values)
+                .enter()
+                .append("rect")
+                .attr("class", "bar")
                 .transition()
-                .duration(1000)
-                .attr("margin", margin)
-                .attr("width", 15)
-                .attr("height", function (d) {
-                    return scale(d);
+                .duration(500)
+                .attr("x", function (d, i) {
+                    return i * 50 + 60;
                 })
-                .attr('x', function (d, i) {
-                    return i * 10;
-                })
-                .attr('y', function (d) {
-                    return (400 - scale(d));
-                })
-                .attr("fill", "#E50914")
+                .attr("width", xScale.bandwidth())
+                .attr("y", function (d) { return yScale(d); })
+                .attr("height", function (d) { return height - margin - yScale(d); })
+                .attr("fill", "#E50914");
 
-            // Add scales to axis
-            //X axis
-            let x = d3.scaleBand()
-                .range([0, 300])
-                .domain([8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21])
-            // .rangeRoundBands([0, 300], .2);
-            // .paddingInner(0.8)
-            // .padding(0.2);
+            //tooltip details
+            let tooltip = d3.select('body')
+                .append('div')
+                .attr('class', 'd3-tooltip')
+                .style('position', 'absolute')
+                .style('z-index', '10')
+                .style('visibility', 'hidden')
+                .style('padding', '10px')
+                .style('background', 'rgba(0,0,0,0.6)')
+                .style('border-radius', '4px')
+                .style('color', '#fff')
+                .text('a simple tooltip');
+
+            
+            //adding tooltips
+            svg.selectAll('rect')
+                .data(values)
+                .on('mouseover', function (d, i) {
+                    tooltip
+                        .text("Value: " + d)
+                        .style('visibility', 'visible');
+                })
+
+            svg.selectAll("rect")
+                .on('mousemove', function () {
+                    tooltip
+                        .style('top', d3.event.pageY - 10 + 'px')
+                        .style('left', d3.event.pageX + 10 + 'px');
+                })
+
+            svg.selectAll('rect')
+                .on('mouseout', function () {
+                    tooltip.text(``).style('visibility', 'hidden');
+                })
+
+            //appending X axis
             svg.append("g")
-                .attr("transform", "translate(0,400)")
-                .call(d3.axisBottom(x).ticks(14))
+                .attr("transform", "translate(0, " + (height - margin) + ")")
+                .call(d3.axisBottom(xScale))
+                .selectAll("text")
+                .style("text-anchor", "end")
+                .attr("dx", "-0.8em")
+                .attr("dy", "-0.8em")
+                .attr("transform", "rotate(-90)");
 
-            //Y axis
-            let y = d3.scaleLinear()
-                .domain([0, d3.max(values)])
-                .range([height - 200, 40]);
+            //appending Y axis
             svg.append("g")
-                .attr("class", "myYaxis")
-                .call(d3.axisLeft(y));
-
+                .attr("transform", "translate(" + margin + ",0)")
+                .call(d3.axisLeft(yScale));
 
         })
 }
