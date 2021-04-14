@@ -82,7 +82,7 @@ body {
 /* Map controller */
 #map-controller, #streamgraph-controller {
     width: 800px;
-    margin: 50px;
+    margin: 0px 50px 0px 50px;
     display: grid;
     grid-template-columns: 300px 500px;
     border: thin white solid;

@@ -1,3 +1,9 @@
+/**
+ * Attribution:
+ * Streamgraph adapted from here: https://www.d3-graph-gallery.com/streamgraph
+ * Transition was adapted from here: https://observablehq.com/@d3/streamgraph-transitions
+ * */
+
 import {dataPath, dataSplit, getUniqueGenres} from "./utils.js";
 
 const margin = 50
@@ -170,7 +176,7 @@ function update() {
 
             // append x axis
             svg.select(".x.axis")
-                .duration(750)
+                .duration(500)
                 .call(xAxis.tickSize(-height).tickFormat(d3.format(".4i")))
                 .select(".domain").remove()
 
@@ -184,13 +190,10 @@ function update() {
             }
 
             // Show the areas
-            // https://bl.ocks.org/giorgi-ghviniashvili/56a25952c1ee6e93fd9d39ef508abc5d
-            // https://bl.ocks.org/d3noob/7030f35b72de721622b8
-            // todo area update doesn't work yet
-            d3.selectAll("mylayers")
+            d3.selectAll(".myArea")
                 .data(dataObj.stackedData)
-                .duration(750)
-                .style("fill", function(d) { return color(d.key); })
+                .transition()
+                .duration(0)
                 .attr("d", area)
         })
 }
