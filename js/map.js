@@ -1,6 +1,6 @@
 import {dataPath, dataSplit, geoDataPath, getUniqueCountries, getUniqueGenres} from "./utils.js";
 
-function makeVis([geoData, data]) {
+function makeMap([geoData, data]) {
 
     let selectedYear = null;
     let selectedGenres = null;
@@ -145,11 +145,20 @@ function makeVis([geoData, data]) {
     mapTimeCheckBox.onclick = () => {
         if (mapTimeCheckBox.checked) {
             mapTimeSlider.disabled = false
+
+            // disable genres and select all genres
+            genreSelectBox.disabled = true
+            selectedGenres = uniqueGenres;
+            Array.from(genreSelectBox.selectedOptions).forEach(i => i.selected = false)
+
             selectedYear = parseInt(mapTimeSlider.value);
             drawCircles()
             yearDisplay.innerText = mapTimeSlider.value
         } else {
+
             mapTimeSlider.disabled = true
+            genreSelectBox.disabled = false;
+
             selectedYear = null;
             drawCircles()
             yearDisplay.innerText = "All years"
@@ -165,7 +174,6 @@ function makeVis([geoData, data]) {
 
     genreSelectBox.onchange = () => {
         const genres = Array.from(genreSelectBox.selectedOptions).map(el => el.value)
-        console.log(genres)
         selectedGenres = genres
         drawCircles()
     }
@@ -188,4 +196,4 @@ let dataPromises = [
 ]
 
 // Resolve promises before making the visualisation
-Promise.all(dataPromises).then(makeVis);
+Promise.all(dataPromises).then(makeMap);
