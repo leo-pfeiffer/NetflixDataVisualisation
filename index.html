@@ -80,17 +80,17 @@
                 <div class="splide__track">
                     <ul class="splide__list">
                         <li class="splide__slide">
-                            <video id='video_player1' controls>
+                            <video id='video_player1' height="420" controls>
+                                <source src='media/map-video.mp4' type='video/mp4'>
+                            </video>
+                        </li>
+                        <li class="splide__slide">
+                            <video id='video_player2' height="420" controls>
                                 <source src='media/test.mov' type='video/mp4'>
                             </video>
                         </li>
                         <li class="splide__slide">
-                            <video id='video_player2' controls>
-                                <source src='media/test.mov' type='video/mp4'>
-                            </video>
-                        </li>
-                        <li class="splide__slide">
-                            <video id='video_player3' controls>
+                            <video id='video_player3' height="420" controls>
                                 <source src='media/test.mov' type='video/mp4'>
                             </video>
                         </li>
@@ -117,7 +117,7 @@
                 Explore the number of movies and shows in the netflix library per production country. When using the year filter,
                 be aware that there are significantly fewer entries in the database pre-2015 compared to later years. Alternatively,
                 the genre filter allows you to look at one or more genres in particular. To revert your selection and display
-                all genres at once, simply select all (<strong>Ctrl + A</strong> / <strong>CMD + A</strong>).
+                all genres at once, simply select all (<strong>Ctrl + A</strong> / <strong>&#8984; + A</strong>).
             </p>
             <div class="map" id="map"></div>
             <div class="controller" id="map-controller">
@@ -170,7 +170,9 @@
 
     // Initiate the video slider.
     document.addEventListener( 'DOMContentLoaded', function () {
-        new Splide( '#video-slider' ).mount();
+        new Splide( '#video-slider', {
+            height: '420px',
+        }).mount();
     } );
 
 </script>
