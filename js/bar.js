@@ -124,6 +124,8 @@ const makeVisBar = function (type) {
                         return obj
                     }, {})
 
+                // for year in [2008, 2009, ...]: if totalTV has own property `year`, do nothing else set totalTV[year] = 0
+
                 return totalTV
             }
 

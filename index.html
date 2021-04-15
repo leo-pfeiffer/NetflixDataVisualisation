@@ -76,7 +76,7 @@
             <p class="lead">
                 Watch the following short videos to learn how to use each of the views.
             </p>
-            <div id="image-slider" class="splide">
+            <div id="video-slider" class="splide">
                 <div class="splide__track">
                     <ul class="splide__list">
                         <li class="splide__slide">
@@ -156,8 +156,7 @@
 <script type="text/javascript">
 
     // Change layout of header when scrolling
-    // Attribution https://www.web-eau.net/blog/examples-header-bootstrap
-
+    // Start of code taken https://www.web-eau.net/blog/examples-header-bootstrap
     $(function () {
         $(window).on('scroll', function () {
             if ( $(window).scrollTop() > 10 ) {
@@ -167,8 +166,11 @@
             }
         });
     });
+    // End of code taken from https://www.web-eau.net/blog/examples-header-bootstrap
+
+    // Initiate the video slider.
     document.addEventListener( 'DOMContentLoaded', function () {
-        new Splide( '#image-slider' ).mount();
+        new Splide( '#video-slider' ).mount();
     } );
 
 </script>

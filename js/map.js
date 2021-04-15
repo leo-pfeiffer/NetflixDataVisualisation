@@ -113,9 +113,9 @@ function makeVis([geoData, data]) {
 
             // Add the circle
             let circle = L.circle(coordinates[d], {
-                color: 'black',
-                fillColor: 'black',
-                fillOpacity: 0.4,
+                color: 'darkred',
+                fillColor: 'darkred',
+                fillOpacity: 0.5,
                 radius: 500 * (countData[d].movieCount + countData[d].showCount)
             })
             circle.addTo(circleLayer)
