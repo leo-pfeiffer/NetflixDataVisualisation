@@ -11,7 +11,7 @@ function makeMap([geoData, data]) {
     // Create the map
     const map = L.map('map').setView([28.0339, 1.6596], 2);
 
-    // Add tile layers
+    // Create tile layers
     const OSM = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
         attribution: '&copy; <a href="href://osm.org/copyright">OpenStreetMap</a> contributors'
     });
@@ -30,13 +30,15 @@ function makeMap([geoData, data]) {
         ext: 'png'
     });
 
+    // add the layers to the map
     OSM.addTo(map);
     CartoDB_PositronNoLabels.addTo(map)
     Stamen_TonerHybrid.addTo(map)
 
-    // Create an array that contains all countries from the dataset (unique)
+    // Get an array that contains all countries from the dataset (unique)
     let uniqueCountries = getUniqueCountries(data)
 
+    // Get an array of unique genres of the data set
     let uniqueGenres = getUniqueGenres(data)
 
     // Movie and Show count for all countries in a give year
@@ -62,7 +64,8 @@ function makeMap([geoData, data]) {
                             obj[d] = {"movieCount": 1, "showCount": 0}
                         }
                     })
-                } else if (el.type === "TV Show") {
+                }
+                else if (el.type === "TV Show") {
                     el.country.forEach((d) => {
                         if (obj.hasOwnProperty(d)) {
                             obj[d].hasOwnProperty("showCount") ? obj[d]["showCount"] += 1 : obj[d]["showCount"] = 1
@@ -100,11 +103,9 @@ function makeMap([geoData, data]) {
 
         // Get the correctly filtered data set
         let countData = countPerCountryPerFilter()
-        if (Object.values(countData).length === 0) return
 
-        let maxCount = Object.values(countData)
-            .map(el => Math.max(el.movieCount, el.showCount))
-            .reduce((a, b) => b > a ? b : a)
+        // Stop if there are no values in the filtered data set
+        if (Object.values(countData).length === 0) return
 
         uniqueCountries.forEach((d) => {
 
@@ -123,8 +124,10 @@ function makeMap([geoData, data]) {
             // Add the popup
             let popUp = L.popup();
 
+            // define the HTML text that is displayed
             let content = `<strong>${d}</strong><br>Movies: ${countData[d].movieCount}<br>Shows: ${countData[d].showCount}`
 
+            // Define the mouseover effect
             circle.on("mouseover", (e) => {
                 popUp.setLatLng(e.latlng)
                     .setContent(content)
@@ -154,8 +157,8 @@ function makeMap([geoData, data]) {
             selectedYear = parseInt(mapTimeSlider.value);
             drawCircles()
             yearDisplay.innerText = mapTimeSlider.value
-        } else {
-
+        }
+        else {
             mapTimeSlider.disabled = true
             genreSelectBox.disabled = false;
 
@@ -165,6 +168,7 @@ function makeMap([geoData, data]) {
         }
     }
 
+    // create the options for the genre select box
     uniqueGenres.forEach((g) => {
         let option = document.createElement('option')
         option.value = g
@@ -172,6 +176,7 @@ function makeMap([geoData, data]) {
         genreSelectBox.appendChild(option)
     })
 
+    // define the behaviour for when the selected genres change
     genreSelectBox.onchange = () => {
         const genres = Array.from(genreSelectBox.selectedOptions).map(el => el.value)
         selectedGenres = genres

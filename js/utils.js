@@ -1,23 +1,13 @@
 // data path for main data set
 export const dataPath = "data/netflix_clean.csv"
 
+// data path for the geo locations data.
+// Attribution: https://github.com/google/dspl/blob/master/samples/google/canonical/countries.csv
 export const geoDataPath = "data/geo.csv"
 
-export const rowConverter = function(d) {
-
-    let country = d.country.split(', ')
-    let listed_in = d.listed_in.split(', ')
-    let director = d.director.split(', ')
-    let cast = d.cast.split(', ')
-
-    d.country = country
-    d.listed_in = listed_in
-    d.director = director
-    d.cast = cast
-
-    return d;
-};
-
+/**
+ * Split the rows of columns that contain comma separated values into arrays.
+ * */
 export const dataSplit = function(data) {
     data = data.map(el => {
         el.country = el.country.split(', ');
@@ -29,11 +19,17 @@ export const dataSplit = function(data) {
     return data;
 }
 
+/**
+ * Extract an array of the unique genres from the data set.
+ * */
 export const getUniqueGenres = function(data) {
     return data.map(el => el.listed_in).reduce((a, b) => a.concat(b))
         .filter((v, i, self) => self.indexOf(v) === i).filter(el => el !== "NA")
 }
 
+/**
+ * Extract an array of the unique production countries from the data set.
+ * */
 export const getUniqueCountries = function(data) {
     return data.map(el => el.country).reduce((a, b) => a.concat(b))
         .filter((v, i, self) => self.indexOf(v) === i).filter(el => el !== "NA")

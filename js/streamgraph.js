@@ -11,19 +11,24 @@ const width = 750
 const height = 450
 
 // todo start year
-var startYear = 2015
+let startYear = 2015
 
+// Get the HTML elements from the DOM
 const yearDisplay = document.getElementById('streamgraph-year');
 const timeSlider = document.getElementById('streamgraph-time-slider');
 
+// Add function to time slider that displays the currently selected starting year
 timeSlider.onchange = () => {
     startYear = parseInt(timeSlider.value);
-    // todo streamgraph should not be redrawn but updated
-    yearDisplay.innerText = startYear
+    yearDisplay.innerText = startYear;
     update()
 }
 
+/**
+ * Put the data into the correct format used whenever the stream graph is updated.
+ * */
 function wrangleData(data) {
+
     // convert the comma separated fields into arrays
     data = dataSplit(data)
 
@@ -56,8 +61,10 @@ function wrangleData(data) {
     // convert back into an array
     preppedData = Object.entries(preppedData).map(el => el[1])
 
+    // stack the data for the stream graph
     let stackedData = d3.stack().offset(d3.stackOffsetExpand).keys(genres)(preppedData)
 
+    // update the year extent
     let yearExtent = d3.extent(data, (d) => d.year)
 
     return {
@@ -68,7 +75,7 @@ function wrangleData(data) {
 }
 
 
-var svg = d3.select("#streamgraph")
+let svg = d3.select("#streamgraph")
     .append("svg")
     .attr("width", width + margin)
     .attr("height", height + margin)
@@ -76,17 +83,17 @@ var svg = d3.select("#streamgraph")
     .attr("transform", "translate(0, 0)");
 
 // define the x axis
-var x = d3.scaleLinear()
-var xAxis = d3.axisBottom(x);
+let x = d3.scaleLinear()
+let xAxis = d3.axisBottom(x);
 
 // define the y axis
-var y = d3.scaleLinear().domain([0, 1]).range([height, 0]);
+let y = d3.scaleLinear().domain([0, 1]).range([height, 0]);
 
 // define colors
-var color = d3.scaleOrdinal()
+let color = d3.scaleOrdinal()
 
 // create a tooltip
-var Tooltip = svg
+let Tooltip = svg
     .append("text")
     // have to swap x and y due to rotation
     .attr("x", -height)
@@ -98,7 +105,7 @@ var Tooltip = svg
     .attr("transform", "rotate(-90)");
 
 // Three function that change the tooltip when user hover / move / leave a cell
-var mouseover = function(d) {
+let mouseover = function(d) {
     Tooltip.style("opacity", 1)
     d3.selectAll(".myArea").style("opacity", .3)
     d3.select(this)
@@ -106,19 +113,22 @@ var mouseover = function(d) {
         .style("opacity", 1)
 }
 
-var mousemove;
+// instantiate mousemove
+let mousemove;
 
-var mouseleave = function(d) {
+let mouseleave = function(d) {
     Tooltip.style("opacity", 0)
     d3.selectAll(".myArea").style("opacity", 1).style("stroke", "none")
 }
 
 // Area generator
-var area = d3.area()
+let area = d3.area()
     .x(function(d) { return x(d.data.year) + margin; })
     .y0(function(d) { return y(d[0]); })
     .y1(function(d) { return y(d[1]); })
 
+
+// Initially draw the graph
 d3.csv(dataPath)
     .then(function(data) {
 
@@ -160,6 +170,10 @@ d3.csv(dataPath)
             .on("mouseleave", mouseleave)
     })
 
+
+/**
+ * Function to update the graph whenever the starting year is changed.
+ * */
 function update() {
 
     d3.csv(dataPath)

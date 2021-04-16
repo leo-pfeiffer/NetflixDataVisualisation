@@ -54,6 +54,9 @@ body {
 
 /* End of code adapted from https://www.web-eau.net/blog/examples-header-bootstrap */
 
+/*
+* Footer
+*/
 .footer-text {
     background-color: #E50914;
     color: white;
@@ -66,7 +69,7 @@ body {
 }
 
 /*
-* Splide
+* Splide slide show
 */
 .splide__slide video {
     width : 50%;
@@ -95,13 +98,8 @@ body {
     margin: 50px;
 }
 
-/* Contains controller elements (e.g. slider, filter etc) for views */
-.controller {
-    width: 800px;
-    margin: 50px;
-}
+/* Controller elements (e.g. time slider, filter etc) for views */
 
-/* Map controller */
 #map-controller, #streamgraph-controller, #bar-controller {
     width: 800px;
     margin: 0px 50px 0px 50px;
@@ -116,12 +114,12 @@ body {
     margin-right: 20px;
 }
 
-#map-year-display, #bar-chart-descriptor {
+#map-year-display {
     font-weight: bold;
     font-size: 24px;
 }
 
-#streamgraph-slider-label {
+#streamgraph-slider-label, #bar-chart-descriptor {
     padding-top: 15px;
     font-weight: bold;
     font-size: 24px;
