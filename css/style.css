@@ -102,7 +102,7 @@ body {
 }
 
 /* Map controller */
-#map-controller, #streamgraph-controller {
+#map-controller, #streamgraph-controller, #bar-controller {
     width: 800px;
     margin: 0px 50px 0px 50px;
     display: grid;
@@ -112,11 +112,11 @@ body {
     padding: 10px
 }
 
-#map-genre-select, #streamgraph-time-slider {
+#map-genre-select, #streamgraph-time-slider, #bar-toggle-btn {
     margin-right: 20px;
 }
 
-#map-year-display {
+#map-year-display, #bar-chart-descriptor {
     font-weight: bold;
     font-size: 24px;
 }

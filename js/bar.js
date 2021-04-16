@@ -2,11 +2,11 @@ import { dataPath } from "./utils.js";
 
 //setting svg dimensions
 const width = 800;
-const height = 600;
+const height = 500;
 const margin = 50;
 
 //creating SVG
-let svg = d3.select("#vis1")
+let svg = d3.select("#bar-chart")
     .append("svg")
     .attr("width", width)
     .attr("height", height)
@@ -106,9 +106,6 @@ const makeVisBar = function (type) {
                 values.push(count[k]);
             }
 
-            // console.log(keys)
-            // console.log(values)
-
             //setting the domain
             xScale.domain([2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]);
             yScale.domain([0, d3.max(values, function (d) { return d; })]);
@@ -183,24 +180,20 @@ const makeVisBar = function (type) {
         })
 }
 
-//function to create button to switch between TV shows and movies
-function makeToggleButton() {
-    const toggleButton = document.createElement('button')
-    toggleButton.innerText = 'TV Show'
-    document.getElementById('bar-controller').appendChild(toggleButton);
-    return toggleButton;
-}
-const toggleButton = makeToggleButton();
+const toggleButton = document.getElementById('bar-toggle-btn');
+const descriptionText = document.getElementById('bar-chart-descriptor')
 let showType = "Movie" //setting initial value to 'Movies'
 
 //functionality to create the graph based on user input
 toggleButton.onclick = () => {
     showType = showType === "Movie" ? "TV Show" : "Movie"
     if (showType === "TV Show") {
-        toggleButton.innerText = 'Movie'
+        toggleButton.innerText = 'Show movie data'
+        descriptionText.innerText = 'Count of TV shows'
     }
     else {
-        toggleButton.innerText = 'TV Show'
+        toggleButton.innerText = 'Show TV show data'
+        descriptionText.innerText = 'Count of movies'
     }
     makeVisBar(showType);
 }
