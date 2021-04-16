@@ -55,11 +55,11 @@
         <header class="py-5 mt-5">
             <h1 class="display-4">Netflix shows and movies.</h1>
             <p class="lead">
-                We're exploring a
+                We are exploring a
                 <a href="https://www.kaggle.com/shivamb/netflix-shows" class="text-white">
                     <u>dataset</u>
                 </a>
-                containing data on all movies and tv shows on Netflix (US) as of Spring 2021.
+                that contains data on all movies and tv shows on Netflix (US) as of Spring 2021.
                 Our goal is to provide visualisations that help explore and answer the question:
             </p>
             <p class="lead text-red font-weight-bold">How has the Netflix library changed over time?</p>
@@ -98,16 +98,19 @@
                 </div>
             </div>
             <p class="lead">
-                Note that the dataset contains comparatively few movies and shows that were added before 2015. Where appropriate,
-                we therefore apply default filters on the time displayed to avoid obscuring the visualisations. These default
-                filters are just an entry point though, so feel free to change the filters.
+                Note that the dataset contains comparatively few movies and shows that were added before 2015. Therefore, where appropriate,
+                we apply default filters on the time displayed to avoid obscuring the visualisations. These default
+                filters are just an entry point and the filters can be changed according to your preference.
             </p>
 
         </div>
 
         <div class="py-5" id="vis1">
             <h1 class="display-6">Bar chart.</h1>
-            <p class="lead">@Glenys : short description of what the bar chart does and how one could use it to answer the question.</p>
+            <p class="lead">The number of shows and movies added to the Netflix library constantly changes. The following 
+                bar graph can be used to observe the fluctuations in the total count over the years. The button provided can 
+                be used to toggle between the total count of movies (initial state) and TV shows, and a tooltip is provided 
+                for a closer analysis of the count in each year. </p>
             <div class="controller" id="bar-controller"></div>
         </div>
 
