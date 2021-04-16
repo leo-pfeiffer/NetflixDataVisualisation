@@ -1,5 +1,6 @@
 import { dataPath } from "./utils.js";
 
+//setting svg dimensions
 const width = 800;
 const height = 600;
 const margin = 50;
@@ -11,28 +12,23 @@ let svg = d3.select("#vis1")
     .attr("height", height)
 
 //creating scales
-var xScale = d3.scaleBand()
+let xScale = d3.scaleBand()
     .range([margin, width - 30])
     .padding(0.2);
-var yScale = d3.scaleLinear()
+let yScale = d3.scaleLinear()
     .range([height - margin, 0]);
 
 //appending X axis
 let xAxis = svg.append("g")
     .attr("transform", "translate(0, " + (height - margin) + ")")
     .call(d3.axisBottom(xScale))
-    .selectAll("text")
-    .style("text-anchor", "end")
-    .attr("dx", "-0.8em")
-    .attr("dy", "-0.8em")
-    .attr("transform", "rotate(-90)");
 
 //appending Y axis
 let yAxis = svg.append("g")
     .attr("transform", "translate(" + margin + ",0)")
 
+//function to split the year from the date in date_added column
 const rowConverter = function (d) {
-    //function to split the year from the date in date_added column
     let date_added_year = d.date_added;
     let datum = date_added_year.split(", ");
 
@@ -57,18 +53,16 @@ const makeVisBar = function (type) {
                         return obj
                     }, {})
                 let years = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
+                //checking for missing values
                 let addMissingValues = value => {
                     if (totalTV.hasOwnProperty(value)) {
-                        console.log(value)
                     }
                     else {
                         totalTV[value] = 0
                     }
                 }
                 years.forEach(addMissingValues)
-
                 return totalTV
-
             }
 
             //function to calculate number of movies added over the years
@@ -80,9 +74,9 @@ const makeVisBar = function (type) {
                         return obj
                     }, {})
                 let years = [2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]
+                //checking for missing values
                 let addMissingValues = value => {
                     if (totalMovie.hasOwnProperty(value)) {
-                        console.log(value)
                     }
                     else {
                         totalMovie[value] = 0
@@ -92,10 +86,13 @@ const makeVisBar = function (type) {
                 return totalMovie
             }
 
+        
             let count;
             let keys = [];
             let values = [];
 
+            //checking the value of the parameter that 
+            //was passed to call appropriate function
             if (type === "TV Show") {
                 count = countTV()
             }
@@ -103,15 +100,16 @@ const makeVisBar = function (type) {
                 count = countMovie()
             }
 
-            //separating keys (the years) from values (based on button click?)
+            //separating keys (the years) from values
             for (let k in count) keys.push(parseInt(k));
             for (let k in count) {
                 values.push(count[k]);
             }
 
-            console.log(keys)
-            console.log(values)
+            // console.log(keys)
+            // console.log(values)
 
+            //setting the domain
             xScale.domain([2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021]);
             yScale.domain([0, d3.max(values, function (d) { return d; })]);
 
@@ -127,13 +125,12 @@ const makeVisBar = function (type) {
                 .enter()
                 .append("rect")
                 .attr("class", "bar")
-                // .transition()
-                // .duration(500)
+                .transition()
+                .duration(500)
                 .attr("x", function (d, i) {
                     return i * 50 + 60;
                 })
                 .attr("width", xScale.bandwidth())
-                //.attr("y", function (d) { return yScale(d); })
                 .attr("y", function (d) { return yScale(0); })
                 .attr("height", function (d) { return height - margin - yScale(0); })
                 .attr("fill", "#E50914");
@@ -145,7 +142,7 @@ const makeVisBar = function (type) {
                 .duration(800)
                 .attr("y", function (d) { return yScale(d); })
                 .attr("height", function (d) { return height - margin - yScale(d); })
-                .delay(function (d, i) { console.log(i); return (i * 100) })
+                .delay(function (d, i) { return (i * 100); })
 
             //tooltip details
             let tooltip = d3.select('body')
@@ -186,20 +183,26 @@ const makeVisBar = function (type) {
         })
 }
 
+//function to create button to switch between TV shows and movies
 function makeToggleButton() {
     const toggleButton = document.createElement('button')
-    toggleButton.innerText = 'Toggle'
+    toggleButton.innerText = 'TV Show'
     document.getElementById('bar-controller').appendChild(toggleButton);
     return toggleButton;
 }
-
 const toggleButton = makeToggleButton();
-let showType = "Movie"
+let showType = "Movie" //setting initial value to 'Movies'
 
+//functionality to create the graph based on user input
 toggleButton.onclick = () => {
     showType = showType === "Movie" ? "TV Show" : "Movie"
+    if (showType === "TV Show") {
+        toggleButton.innerText = 'Movie'
+    }
+    else {
+        toggleButton.innerText = 'TV Show'
+    }
     makeVisBar(showType);
 }
 
 makeVisBar(showType);
-
