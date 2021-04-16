@@ -10,7 +10,6 @@ const margin = 50
 const width = 750
 const height = 450
 
-// todo start year
 let startYear = 2015
 
 // Get the HTML elements from the DOM
