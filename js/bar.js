@@ -189,12 +189,12 @@ let showType = "Movie"
 toggleButton.onclick = () => {
     showType = showType === "Movie" ? "TV Show" : "Movie"
     if (showType === "TV Show") {
-        toggleButton.innerText = 'Show movie data'
-        descriptionText.innerText = 'Count of TV shows'
+        toggleButton.innerText = 'Show Movie data'
+        descriptionText.innerText = 'Count of TV Shows'
     }
     else {
-        toggleButton.innerText = 'Show TV show data'
-        descriptionText.innerText = 'Count of movies'
+        toggleButton.innerText = 'Show TV Show data'
+        descriptionText.innerText = 'Count of Movies'
     }
     makeVisBar(showType);
 }

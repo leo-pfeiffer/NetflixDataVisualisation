@@ -164,7 +164,7 @@ function makeMap([geoData, data]) {
 
             selectedYear = null;
             drawCircles()
-            yearDisplay.innerText = "All years"
+            yearDisplay.innerText = "All Years"
         }
     }
 
