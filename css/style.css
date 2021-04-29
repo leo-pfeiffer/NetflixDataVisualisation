@@ -71,7 +71,7 @@ body {
 /*
 * Splide slide show
 */
-.splide__slide video {
+.splide__slide iframe {
     width : 50%;
     height: 420px;
     display: block;
